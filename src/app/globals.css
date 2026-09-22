@@ -1,0 +1,269 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Affirm design-system fonts (from @affirm/design-system/assets/fonts).
+   OTF sources; browsers rasterize these fine on macOS + iOS + Android.
+   Family names mirror the design-system's typography.ts:
+     - AxiformaForAffirm{Regular|Medium|Semibold|Bold}
+     - Calibre{Regular|Medium|Semibold|Bold|Italic|BoldItalic}
+   We also expose them under generic families "Axiforma for Affirm" and
+   "Calibre" so the Tailwind theme's font stacks resolve to them.
+--------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Axiforma for Affirm";
+  src: url("/ds-fonts/axiformaforaffirm_regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Axiforma for Affirm";
+  src: url("/ds-fonts/axiformaforaffirm_medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Axiforma for Affirm";
+  src: url("/ds-fonts/axiformaforaffirm_semibold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Axiforma for Affirm";
+  src: url("/ds-fonts/axiformaforaffirm_bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Calibre";
+  src: url("/ds-fonts/calibre_regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Calibre";
+  src: url("/ds-fonts/calibre_medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Calibre";
+  src: url("/ds-fonts/calibre_semibold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Calibre";
+  src: url("/ds-fonts/calibre_bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Calibre";
+  src: url("/ds-fonts/calibre_italic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Calibre";
+  src: url("/ds-fonts/calibre_bold_italic.otf") format("opentype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ---------------------------------------------------------------------------
+   Semantic tokens (light theme, Wave 2 redesign).
+   Values sourced 1:1 from @affirm/design-system:
+     - tokens/colors.ts (base.color.*)
+     - theme/v2SemanticColorAliases.ts (semantic → base mapping)
+
+   IMPORTANT: values are stored as space-separated R G B triplets (not hex)
+   so Tailwind's opacity-modifier syntax works:
+     `text-ink/80` → `color: rgb(var(--ink) / 0.8)`
+   Consumed via `rgb(var(--ink) / <alpha-value>)` in tailwind.config.ts.
+--------------------------------------------------------------------------- */
+:root {
+  /* Brand — Wave 2 primary navy (base.color.indigo.950). */
+  --brand: 10 3 64;         /* #0a0340 */
+  --brand-hover: 27 13 124; /* #1b0d7c (indigo.800) */
+  --brand-pressed: 14 0 83; /* #0e0053 (indigo.900) */
+  --brand-disabled: 221 222 226; /* #dddee2 (gray.100) */
+  --brand-on: 255 255 255;
+  --brand-accent: 74 74 244; /* #4a4af4 (indigo.500) */
+  --brand-link: 27 13 124;   /* #1b0d7c (indigo.800, colorTextLink) */
+
+  /* Backgrounds (colorBgPageSecondary, colorBgSurfacePrimary, gray.050) */
+  --page-bg: 248 248 250;   /* #f8f8fa */
+  --card-bg: 255 255 255;   /* #ffffff */
+  --inset-bg: 237 238 242;  /* #edeef2 */
+
+  /* Text (colorTextDefault, colorTextSupplementary, gray.400) */
+  --ink: 18 19 25;          /* #121319 (gray.950) */
+  --ink-secondary: 95 98 114; /* #5f6272 (gray.500) */
+  --ink-tertiary: 124 128 142; /* #7c808e (gray.400) */
+
+  /* Borders (colorBorderOnpagePrimary / OnpageSecondary) */
+  --border: 204 205 212;    /* #cccdd4 (gray.150) */
+  --border-subtle: 221 222 226; /* #dddee2 (gray.100) */
+
+  /* Usercomm (colorTextUsercomm*) */
+  --error: 180 25 63;       /* #b4193f (red.500) */
+  --success: 0 120 50;      /* #007832 (green.500) */
+  --warning: 139 85 0;      /* #8b5500 (yellow.500) */
+  --info: 25 107 136;       /* #196b88 (blue.500) */
+
+  --focus-ring: rgba(10, 3, 64, 0.18);
+
+  /* Blend mode for DS illustration mp4s (light-matte variant on light bg).
+     White matte × white bg = white → invisible; colored pixels preserved. */
+  --illustration-blend: multiply;
+
+  /* Optional canvas grid tint for the storyboard / flow-index chrome. */
+  --canvas-grid-line: rgba(18, 19, 25, 0.04);
+}
+
+/* ---------------------------------------------------------------------------
+   Dark theme overrides.
+   Activated by <html data-theme="dark"> which the ThemeProvider (or the
+   inline no-flash bootstrap in layout.tsx) sets synchronously before
+   first paint.
+
+   Every semantic token is overridden here — no component code needs to
+   change. Illustrations swap to their `-dark.mp4` variant + a `screen`
+   blend mode via <ThemedIllustration>.
+--------------------------------------------------------------------------- */
+[data-theme="dark"] {
+  /* Brand — lifted from primary indigo.950 (invisible on dark bg) to
+     indigo.500 (`brandAccent` in the DS) for AA contrast on dark surfaces. */
+  --brand: 74 74 244;       /* #4a4af4 (indigo.500) */
+  --brand-hover: 109 112 255; /* #6d70ff (indigo.400) */
+  --brand-pressed: 58 58 212; /* #3a3ad4 */
+  --brand-disabled: 45 46 55;
+  --brand-on: 255 255 255;
+  --brand-accent: 122 125 255; /* #7a7dff */
+  --brand-link: 122 125 255;   /* #7a7dff */
+
+  /* Backgrounds.
+       page-bg  = gray.950 (#121319) — exactly matches DS illustration matte
+       card-bg  = gray.900 (#191A21) — one step lifted (cards visible w/o border)
+       inset-bg = gray.850 (#1F2128) — two steps up (input plates)
+     DS dark-variant illustrations use gray.950 as their matte. Since
+     card-bg is one step brighter, we use `mix-blend-lighten` on the
+     illustration (see `--illustration-blend` below) — for each pixel
+     the max of (video, surface) per channel wins, which drops the matte
+     against any surface that's lighter than gray.950 while preserving
+     the bright colored pixels of the illustration itself. */
+  --page-bg: 18 19 25;      /* #121319 (gray.950) — matches DS matte */
+  --card-bg: 25 26 33;      /* #191A21 (gray.900) — one step lifted */
+  --inset-bg: 31 33 40;     /* #1F2128 (gray.850) — two steps lifted */
+
+  /* Text — near-white primary, muted secondary/tertiary. */
+  --ink: 248 248 250;       /* #F8F8FA (gray.020) */
+  --ink-secondary: 171 173 184; /* #ABADB8 (gray.250) */
+  --ink-tertiary: 124 128 142;  /* #7C808E (gray.400, kept — reads on both) */
+
+  /* Borders. */
+  --border: 45 48 57;       /* #2D3039 (gray.750) */
+  --border-subtle: 38 40 48; /* #262830 (gray.800) */
+
+  /* Usercomm — lifted for AA on dark. */
+  --error: 255 149 157;     /* red.200 */
+  --success: 124 206 140;   /* green.200 */
+  --warning: 255 219 154;   /* dandelion.300 */
+  --info: 94 164 194;       /* blue.300 */
+
+  --focus-ring: rgba(240, 240, 250, 0.28);
+
+  /* Dark-matte DS illustrations use gray.950 (#121319). page-bg matches
+     that exactly, card-bg is one step brighter. `lighten` picks max()
+     per channel between video and surface — the dark matte loses to
+     the (slightly brighter) surface and disappears; bright indigo /
+     purple illustration pixels win and render at full saturation. */
+  --illustration-blend: lighten;
+
+  /* Grid lines flip to light-on-dark. */
+  --canvas-grid-line: rgba(245, 246, 248, 0.045);
+}
+
+html,
+body {
+  /* Vars hold `R G B` triplets — wrap in rgb() to render as color. */
+  background: rgb(var(--page-bg));
+  color: rgb(var(--ink));
+  font-family: "Calibre", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "cv11", "ss01", "ss03";
+  /* Themes both animate — keeps toggle switch feeling like one gesture
+     across the whole surface, not per-component pops. */
+  transition: background-color 320ms ease, color 320ms ease;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Prevent input zoom on iOS inside phone frame */
+input,
+select,
+textarea,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* Hide number input spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Subtle scrollbar inside phone screen */
+.phone-scroll::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+/* Ambient canvas grid for the storyboard page.
+   Line color routes through a CSS variable so it flips for dark mode. */
+.canvas-grid {
+  background-image:
+    linear-gradient(to right, var(--canvas-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--canvas-grid-line) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Marker chip label used on storyboard */
+.marker-chip {
+  font-family: "Calibre", "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgb(var(--ink-tertiary));
+}
+
+/* Utility for editorial hairlines */
+.hairline {
+  height: 1px;
+  background: rgb(var(--border-subtle));
+  width: 100%;
+}
