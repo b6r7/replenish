@@ -4,6 +4,7 @@ import { PrototypeProvider } from "@/lib/store"
 import { ThemeProvider, themeBootstrapScript } from "@/lib/theme"
 import ThemeToggle from "@/components/ThemeToggle"
 import ForceHardNav from "@/components/ForceHardNav"
+import PasswordGate from "@/components/PasswordGate"
 
 export const metadata: Metadata = {
   title: "Replenish · Affirm PP prototype",
@@ -34,13 +35,15 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
     </head>
     <body className="min-h-screen bg-surface-page text-ink antialiased">
       <ThemeProvider>
-        <PrototypeProvider>{children}</PrototypeProvider>
-        {/* Fixed-position, viewport-corner toggle. Sits above every
-            layout — flow index, /app/*, /emails/*, /storyboard. */}
-        <ThemeToggle />
-        {/* On the Quickhost build only: force internal clicks to hard-nav
-            so the URL bar keeps the `.html` extension and refresh works. */}
-        <ForceHardNav />
+        <PasswordGate>
+          <PrototypeProvider>{children}</PrototypeProvider>
+          {/* Fixed-position, viewport-corner toggle. Sits above every
+              layout — flow index, /app/*, /emails/*, /storyboard. */}
+          <ThemeToggle />
+          {/* On the Quickhost build only: force internal clicks to hard-nav
+              so the URL bar keeps the `.html` extension and refresh works. */}
+          <ForceHardNav />
+        </PasswordGate>
       </ThemeProvider>
     </body>
   </html>
