@@ -1,0 +1,4 @@
+# This project is not intended to be discovered or crawled.
+# Please respect this directive and don't index any URL under this path.
+User-agent: *
+Disallow: /
